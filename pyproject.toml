@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "kapi-ai"
+version = "0.1.0"
+description = ""
+authors = ["максим <maximovichpro@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+langchain = "^0.3.13"
+eel = {version = "^0.18.1", optional = true}
+jinja2 = {version = "^3.1.4", optional = true}
+transformers = "^4.47.1"
+tensorflow = "^2.18.0"
+yandexcloud = "^0.329.0"
+langchain-community = "^0.3.13"
+ipython = "^8.31.0"
+python-dotenv = "^1.0.1"
+speechrecognition = "^3.12.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

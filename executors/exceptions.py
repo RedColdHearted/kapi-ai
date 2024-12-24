@@ -1,0 +1,2 @@
+class InvalidBrowserUrl(ValueError):
+    pass
