@@ -37,8 +37,8 @@ User request: {user_message}"""
 
 prompt = PromptTemplate.from_template(DEFAULT_AI_TEMPLATE)
 llm = YandexGPT(
-    iam_token=os.getenv("YANDEX_IAM_TOKEN"),
-    model_uri=os.getenv("YANDEX_MODEL_URI"),
+    iam_token=os.getenv("YC_IAM_TOKEN"),
+    model_uri=os.getenv("YC_MODEL_URI"),
     temperature=0.4,
     max_tokens=2000,
 )
