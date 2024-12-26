@@ -8,7 +8,6 @@ from .locals import (
 
 AppParams = dict[str, str | int]
 
-OS_NAME = platform.system()
 
 class ExecutorManager:
 
@@ -20,12 +19,9 @@ class ExecutorManager:
 
     def run(self, app_name: str, params: AppParams = {}):
         app_name = app_name.lower()
-        for executor in self.executors:
-            if executor.app_name == app_name:
-                if params:
-                    instance = executor(**params)
-                else:
-                    instance = executor()
-                instance.call(OS_NAME)
-                return True
-        return False
+        for Executor in self.executors:
+            if Executor.name == app_name:
+                app = Executor(**params)
+                app.call()
+                print(app.to_dict())
+                return app.to_dict()

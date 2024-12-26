@@ -17,6 +17,9 @@ langchain-community = "^0.3.13"
 ipython = "^8.31.0"
 python-dotenv = "^1.0.1"
 speechrecognition = "^3.12.0"
+requests = "^2.32.3"
+pyjwt = "^2.10.1"
+pyaudio = "^0.2.14"
 
 
 [build-system]

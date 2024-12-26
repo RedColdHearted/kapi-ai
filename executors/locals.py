@@ -1,38 +1,40 @@
 import webbrowser
 
-from .base import CallableExecute, PathableExecute
+from .base import BaseExecute, PathableExecute
 from .exceptions import InvalidBrowserUrl
 
 
 DEFAULT_BROWSER_URL = "https://google.com"
 
 
-class Browser(CallableExecute):
+class Browser(BaseExecute):
 
-    app_name = "browser"
+    name = "browser"
 
-    def __init__(self, url: str = DEFAULT_BROWSER_URL):
+    def __init__(self, url: str = DEFAULT_BROWSER_URL, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         if not url.startswith("https://"):
             raise InvalidBrowserUrl()
         self.url = url
 
     def anywhere(self) -> bool:
-        return webbrowser.open_new_tab(self.url)
+        webbrowser.open_new_tab(self.url)
+        self.metadata["is_running"] = True
 
 
-class Calculator(PathableExecute, CallableExecute):
+class Calculator(PathableExecute):
 
-    app_name = "calculator"
+    name = "calculator"
     paths = {
-        "windows": "C:\Windows\System32\calc.exe",
+        "windows": "C:\\Windows\\System32\\calc.exe",
     }
 
 
-class FileExplorer(PathableExecute, CallableExecute):
+class FileExplorer(PathableExecute):
 
-    app_name = "file_explorer"
+    name = "file_explorer"
     paths = {
-        "windows": "C:\Windows\explorer.exe",
+        "windows": "C:\\Windows\\explorer.exe",
     }
 
 

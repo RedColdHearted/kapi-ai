@@ -1,15 +1,16 @@
 import os
 
-from langchain_community.llms import YandexGPT
+import speech_recognition as sr
+from langchain_community.llms.yandex import YandexGPT
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain.memory import ConversationBufferMemory
-import speech_recognition as sr
+
 
 from dotenv import load_dotenv
 
 from executors.manager import ExecutorManager
-
+from utils import get_yc_iam_token
 
 load_dotenv()
 
@@ -37,8 +38,9 @@ User request: {user_message}"""
 
 prompt = PromptTemplate.from_template(DEFAULT_AI_TEMPLATE)
 llm = YandexGPT(
-    iam_token=os.getenv("YC_IAM_TOKEN"),
+    iam_token=get_yc_iam_token(),
     model_uri=os.getenv("YC_MODEL_URI"),
+    folder_id=os.getenv("YC_FOLDER_ID"),
     temperature=0.4,
     max_tokens=2000,
 )
@@ -60,4 +62,4 @@ def voice_recognition() -> str:
         print("Say something!")
         audio = recognizer.listen(source)
 
-request_llm("Привет, я хочу глянуть новые видосы мистера биста")
+request_llm("открой мне проводник")
