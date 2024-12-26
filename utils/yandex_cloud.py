@@ -34,11 +34,10 @@ class JWTPayload:
 def _read_credentials() -> SEAccountCredentials:
     """Read and return se-account keys from json file."""
     with open(YC_SE_ACCOUNT_CREDENTIALS, "r") as credentials_file:
-        obj = credentials_file.read()
-        obj = json.loads(obj)
+        obj = json.load(credentials_file)
         return SEAccountCredentials(
-            private_key=["private_key"],
-            key_id = obj["id"],
+            private_key=obj["private_key"],
+            key_id=obj["id"],
             service_account_id=obj["service_account_id"],
         )
 
@@ -60,15 +59,21 @@ def get_yc_iam_token() -> str:
 
     """
     credentials = _read_credentials()
+    payload = _create_payload(credentials.service_account_id)
 
     response = requests.post(
         YC_IAM_TOKEN_URL,
         json={
             "jwt": jwt.encode(
-                payload=_create_payload(credentials.service_account_id),
+                payload={
+                    "aud": payload.aud,
+                    "iss": payload.iss,
+                    "iat": payload.iat,
+                    "exp": payload.exp,
+                },
                 key=credentials.private_key,
                 algorithm=JWT_ALGORITHM,
-                headers={"kid": credentials.key_id}
+                headers={"kid": credentials.key_id},
             ),
         },
         headers={

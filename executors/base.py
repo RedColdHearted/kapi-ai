@@ -15,7 +15,7 @@ class BaseExecute(ABC):
     """Name of the app to execute."""
     metadata: dict[str, str] = {}
     """Storage of app execution process."""
-    _os_name = platform.system()
+    _os_name = platform.system().lower()
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

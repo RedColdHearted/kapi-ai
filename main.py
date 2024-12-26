@@ -4,7 +4,6 @@ import speech_recognition as sr
 from langchain_community.llms.yandex import YandexGPT
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from langchain.memory import ConversationBufferMemory
 
 
 from dotenv import load_dotenv
@@ -21,14 +20,14 @@ message: <A conversational response to the user, for example: I'm launching YouT
 app: <dict, argument which shows that user needs to run app>,
     (
     name: <The name of the application that the user wants to launch, for example: browser, or calculator. The name should be in English. You must understand that if a user asks to open a social network, then it can be opened in a browser>,
-    params: <params that are needed to launch an application, for example to launch YouTube in the browser 'url' : 'https://youtube.com'>,
+    params: <params that are needed to launch an application, for example to launch YouTube in the browser 'url' : 'https://youtube.com...'>,
     )
 )
 Keep in mind that the user may not want to launch anything but will simply talk to you.
 Additionally, answer with JSON serializable types.
 
 list of apps with arguments, if app not in list, answer with empty `app_name`:
-    browser(url: str),
+    browser(url: str) comment: if user asking to pen any YT chanel or search by name than you should open with corresponding link,
     calculator(),
     file_explorer(),
 
@@ -41,11 +40,12 @@ llm = YandexGPT(
     iam_token=get_yc_iam_token(),
     model_uri=os.getenv("YC_MODEL_URI"),
     folder_id=os.getenv("YC_FOLDER_ID"),
-    temperature=0.4,
+    temperature=0.6,
     max_tokens=2000,
 )
 chain = prompt | llm | JsonOutputParser()
 apps_manager = ExecutorManager()
+
 
 def request_llm(user_message: str) -> str:
     chain_result = chain.invoke(user_message)
@@ -56,10 +56,26 @@ def request_llm(user_message: str) -> str:
         )
     return chain_result["message"]
 
-def voice_recognition() -> str:
+def record_and_recognize():
     recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Say something!")
-        audio = recognizer.listen(source)
+    microphone = sr.Microphone()
 
-request_llm("открой мне проводник")
+    with microphone as source:
+        recognizer.adjust_for_ambient_noise(source)
+        print("Говорите")
+        audio = recognizer.listen(source, phrase_time_limit=50)
+
+    try:
+        text = recognizer.recognize_google(audio, language='ru-RU')
+        print("Вы сказали:", text)
+        return text
+    except sr.UnknownValueError:
+        print("Не удалось распознать речь.")
+        return
+    except sr.RequestError as e:
+        print(f"Ошибка сервиса распознавания речи: {e}")
+        return
+
+
+user_message = record_and_recognize()
+print(request_llm(user_message))
