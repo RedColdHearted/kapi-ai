@@ -9,7 +9,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from dotenv import load_dotenv
 
 from executors.manager import ExecutorManager
-from utils import get_yc_iam_token
+from utils import RecognizedAudioData, get_yc_iam_token
 
 load_dotenv()
 
@@ -56,25 +56,20 @@ def request_llm(user_message: str) -> str:
         )
     return chain_result["message"]
 
-def record_and_recognize():
+def record_and_recognize() -> RecognizedAudioData:
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
 
     with microphone as source:
         recognizer.adjust_for_ambient_noise(source)
-        print("Говорите")
-        audio = recognizer.listen(source, phrase_time_limit=50)
-
+        audio_data = recognizer.listen(source, phrase_time_limit=50)
     try:
-        text = recognizer.recognize_google(audio, language='ru-RU')
-        print("Вы сказали:", text)
-        return text
+        text = recognizer.recognize_google(audio_data, language='ru-RU')
+        return RecognizedAudioData(text=text)
     except sr.UnknownValueError:
-        print("Не удалось распознать речь.")
-        return
-    except sr.RequestError as e:
-        print(f"Ошибка сервиса распознавания речи: {e}")
-        return
+        return RecognizedAudioData(err="Speech recognition failed.")
+    except sr.RequestError as err:
+        return RecognizedAudioData(err=f"Speech recognition service error: {err}")
 
 
 user_message = record_and_recognize()
