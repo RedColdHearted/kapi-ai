@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "Creds",
+        "dotenv",
         "emanager",
         "langgraph"
     ]

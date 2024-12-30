@@ -2,6 +2,6 @@ import dataclasses
 
 
 @dataclasses.dataclass(frozen=True)
-class RecognizedAudioData:
-    text: str | None
-    err: str | None
+class RecognizedData:
+    text: str = ""
+    err: str | None = None
