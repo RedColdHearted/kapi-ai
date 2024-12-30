@@ -14,7 +14,7 @@ YC_IAM_TOKEN_URL = (
 
 @dataclasses.dataclass(frozen=True)
 class SEAccountCredentials:
-    """Represent attributes of YC service-account credentials."""
+    """Represent dataclass of YC service-account credentials."""
 
     private_key: str
     key_id: str
@@ -23,7 +23,7 @@ class SEAccountCredentials:
 
 @dataclasses.dataclass(frozen=True)
 class JWTPayload:
-    """Represent attributes of JWT payload for YC se-account."""
+    """Represent dataclass of JWT payload for YC se-account."""
 
     aud: str
     iss: str

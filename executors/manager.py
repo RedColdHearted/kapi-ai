@@ -19,7 +19,7 @@ class ExecutorManager:
 
     def run(self, app_name: str, params: AppParams = {}):
         app_name = app_name.lower()
-        print(app_name)
+        print("app_name", app_name)
         for Executor in self.executors:
             if Executor.name == app_name:
                 app = Executor(**params)
